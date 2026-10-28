@@ -81,11 +81,12 @@ const handleSend = async () => {
           </button>
         </div>
 
-        {/* Persona Area (Como na Imagem 1) */}
+        {/* Persona Area */}
         <div className="flex flex-col items-center pb-4 border-b border-gray-800/50">
           <div className="relative mb-3">
             <div className="w-[100px] h-[100px] rounded-full flex items-center justify-center border-2 border-[#20c997] shadow-[0_0_20px_rgba(32,201,151,0.25)] bg-[#1e293b] overflow-hidden">
-            <img src="/image_5e6afc.png" alt="Yzai Persona" className="w-full h-full object-cover object-top text-[10px] text-white text-center flex items-center justify-center break-words" />            </div>
+              <img src="/image_5e6afc.png" alt="Yzai Persona" className="w-full h-full object-cover object-top text-[10px] text-white text-center flex items-center justify-center break-words" />
+            </div>
             <div className="absolute bottom-1 right-2 w-4 h-4 bg-[#22c55e] border-[3px] border-[#131b2c] rounded-full"></div>
           </div>
           <h2 className="text-xl font-bold text-white">Yzai</h2>
@@ -119,11 +120,10 @@ const handleSend = async () => {
               onKeyPress={(e) => e.key === 'Enter' && handleSend()}
               placeholder="Digite sua mensagem..."
               className="flex-1 bg-transparent text-white focus:outline-none text-sm placeholder-gray-500"
-              disabled={interactionCount >= 5}
             />
             <button 
               onClick={handleSend}
-              disabled={interactionCount >= 5 || !inputText.trim()}
+              disabled={!inputText.trim()}
               className="text-[#20c997] hover:text-[#19a57b] disabled:opacity-50 flex-shrink-0"
             >
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -133,7 +133,7 @@ const handleSend = async () => {
           </div>
         </div>
 
-        {/* Modal de Cadastro (Como na Imagem 2) */}
+        {/* Modal de Cadastro */}
         {showModal && (
           <div className="absolute inset-0 bg-[#060a13]/80 flex items-center justify-center z-50 p-4">
             <div className="bg-[#131b2c] rounded-[1.25rem] p-6 w-full max-w-sm border border-gray-800 shadow-2xl relative">
