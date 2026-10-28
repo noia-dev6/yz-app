@@ -17,34 +17,46 @@ export default function App() {
     scrollToBottom();
   }, [messages]);
 
-  const handleSend = () => {
-    if (!inputText.trim()) return;
-    
-    if (interactionCount >= 5) {
+const handleSend = async () => {
+  if (!inputText.trim()) return;
+  
+  if (interactionCount >= 5) {
+    setShowModal(true);
+    return;
+  }
+
+  const newMessages = [...messages, { sender: 'user', text: inputText }];
+  setMessages(newMessages);
+  setInputText('');
+  setInteractionCount(prev => prev + 1);
+
+  try {
+    const respostaDaApi = await fetch('http://localhost:3000/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        mensagem: inputText,
+        ip_usuario: '127.0.0.1', // Identificador temporário para simular limite gratuito
+        is_authenticated: false
+      })
+    });
+
+    const dados = await respostaDaApi.json();
+
+    // Verifica se o backend bloqueou por limite de mensagens (RN04, RN05)
+    if (!respostaDaApi.ok && dados.showModal) {
       setShowModal(true);
       return;
     }
 
-    const newMessages = [...messages, { sender: 'user', text: inputText }];
-    setMessages(newMessages);
-    setInputText('');
-    setInteractionCount(prev => prev + 1);
+    // Adiciona a resposta real da IA na tela
+    setMessages(prev => [...prev, { sender: 'yzai', text: dados.resposta }]);
 
-    setTimeout(() => {
-      let botResponse = "Entendi! Vamos adaptar seu treino.";
-      if (inputText.toLowerCase().includes('casa')) {
-        botResponse = "Ótimo! Podemos montar um treino usando o peso do próprio corpo para você fazer em casa.";
-      } else if (inputText.toLowerCase().includes('dor') || inputText.toLowerCase().includes('lesão')) {
-        botResponse = "Aviso: Como IA, recomendo que consulte um médico ou fisioterapeuta para dores e lesões antes de continuar.";
-      }
-      
-      setMessages(prev => [...prev, { sender: 'yzai', text: botResponse }]);
-      
-      if (interactionCount + 1 >= 5) {
-         setTimeout(() => setShowModal(true), 1500);
-      }
-    }, 1000);
-  };
+  } catch (erro) {
+    console.error("Erro ao conectar com o backend:", erro);
+    setMessages(prev => [...prev, { sender: 'yzai', text: "Erro ao conectar com o servidor Yz." }]);
+  }
+};
 
   return (
     <div className="flex justify-center bg-[#0b1120] min-h-screen font-sans text-gray-100">
